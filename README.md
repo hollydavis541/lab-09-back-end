@@ -1,7 +1,7 @@
 # Code 301 Lab 09 - Advanced Topics  
 
 **Author**: Holly Davis and Lindsay Peltier  
-**Version**: 1.0.0
+**Version**: 1.1.0
 <!-- (increment the patch/fix version number if you make more commits past your first submission) -->
 
 ## Overview
@@ -30,7 +30,7 @@ This is a Node.js server that uses express, dotenv, and cors packages. The serve
 
 ## Change Log
 
-11-08-2019 _____ AM - placeholder
+11-08-2019 09:30 AM - movie database API connection working
 
 11-08-2019 _____ AM - placeholder
 
@@ -45,11 +45,11 @@ This is a Node.js server that uses express, dotenv, and cors packages. The serve
 <!-- Give credit (and a link) to other people or resources that helped you build this application. -->
 
 
-Number and name of feature: Feature #1 ___________  
-Estimate of time needed to complete:  
-Start time:  
-Finish time:  
-Actual time needed to complete:  
+Number and name of feature: Feature #1 Movies  
+Estimate of time needed to complete: 90 minutes
+Start time: 08:20 AM
+Finish time: 09:30 AM
+Actual time needed to complete: 70 minutes 
 
 Number and name of feature: Feature #2 ___________  
 Estimate of time needed to complete:  

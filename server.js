@@ -13,7 +13,6 @@ app.use(cors());
 
 //Configure Database
 const client = new pg.Client(process.env.DATABASE_URL);
-client.connect();
 client.on('err', err => console.error(err));
 
 //Errors
@@ -80,9 +79,15 @@ function Weather(day) {
   this.time = new Date(day.time * 1000).toString().slice(0,15);
 }
 
-function Weather(day) {
-  this.forecast = day.summary;
-  this.time = new Date(day.time * 1000).toString().slice(0,15);
+function Movies(movie) {
+  this.title = movie.title;
+  this.overview = movie.overview;
+  this.average_votes = movie.vote_average;
+  this.total_votes = movie.vote_count;
+  this.image_url = `https://image.tmdb.org/t/p/original${movie.poster_path}`;
+  this.popularity = movie.popularity;
+  this.released_on = movie.release_date;
+  this.created_on = Date.now();
 }
 
 // API Routes
@@ -130,16 +135,15 @@ function getMovies(request, response) {
   const url = `https://api.themoviedb.org/3/movie/now_playing?api_key=${process.env.MOVIE_API_KEY}`;
   superagent.get(url)
     .then( data => {
-      const weatherSummaries = data.body.daily.data.map(day => {
-        return new Weather(day);
+      const movieSummaries = data.body.results.map(movie => {
+        return new Movies(movie);
       });
-      response.status(200).json(weatherSummaries);
+      response.status(200).json(movieSummaries);
     })
     .catch( ()=> {
       errorHandler('No movies for you!', request, response);
     });
 }
-
 
 app.use('*', notFoundHandler);
 app.use(errorHandler);
@@ -148,4 +152,9 @@ app.use(errorHandler);
 
 
 // Make sure the server is listening for requests
-app.listen(PORT, () => console.log(`App is listening on ${PORT}`) );
+client.connect()
+  .then( ()=> {
+    app.listen(PORT, ()=> {
+      console.log('server and db are up, listening on port ', PORT);
+    });
+  });
