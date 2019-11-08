@@ -80,10 +80,16 @@ function Weather(day) {
   this.time = new Date(day.time * 1000).toString().slice(0,15);
 }
 
+function Weather(day) {
+  this.forecast = day.summary;
+  this.time = new Date(day.time * 1000).toString().slice(0,15);
+}
+
 // API Routes
 
 app.get('/location', getLocation);
 app.get('/weather', getWeather);
+app.get('/movies', getMovies);
 
 //Route Handlers
 
@@ -107,7 +113,6 @@ function getLocation(request,response) {
 }
 
 function getWeather(request, response) {
-
   const url = `https://api.darksky.net/forecast/${process.env.WEATHER_API_KEY}/${request.query.data.latitude},${request.query.data.longitude}`;
   superagent.get(url)
     .then( data => {
@@ -117,9 +122,22 @@ function getWeather(request, response) {
       response.status(200).json(weatherSummaries);
     })
     .catch( ()=> {
-      errorHandler('So sorry, something went really wrong', request, response);
+      errorHandler('No weather for you!', request, response);
     });
+}
 
+function getMovies(request, response) {
+  const url = `https://api.themoviedb.org/3/movie/now_playing?api_key=${process.env.MOVIE_API_KEY}`;
+  superagent.get(url)
+    .then( data => {
+      const weatherSummaries = data.body.daily.data.map(day => {
+        return new Weather(day);
+      });
+      response.status(200).json(weatherSummaries);
+    })
+    .catch( ()=> {
+      errorHandler('No movies for you!', request, response);
+    });
 }
 
 
