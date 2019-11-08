@@ -157,8 +157,9 @@ function getMovies(request, response) {
 
 function getYelp(request, response) {
 
-  const url = `https://api.yelp.com/v3/businesses/search?location=${request.query.data.search_query}`;
-  // console.log(request);
+  const url = `https://api.yelp.com/v3/businesses/search?latitude=${request.query.data.latitude}&longitude=${request.query.data.longitude}`;
+
+  console.log(request);
   console.log(url);
   superagent.get(url)
     .set('Authorization', `Bearer ${process.env.YELP_API_KEY}`)
