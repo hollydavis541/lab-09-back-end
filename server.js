@@ -90,11 +90,21 @@ function Movies(movie) {
   this.created_on = Date.now();
 }
 
+function Yelp(review) {
+  this.name = review.name;
+  this.rating = review.rating;
+  this.price = review.price;
+  this.url = review.url;
+  this.image_url = review.image_url;
+  this.created_at = Date.now();
+}
+
 // API Routes
 
 app.get('/location', getLocation);
 app.get('/weather', getWeather);
 app.get('/movies', getMovies);
+app.get('/yelp', getYelp);
 
 //Route Handlers
 
@@ -145,11 +155,30 @@ function getMovies(request, response) {
     });
 }
 
+function getYelp(request, response) {
+
+  const url = `https://api.yelp.com/v3/businesses/search?location=${request.query.data.search_query}`;
+  // console.log(request);
+  console.log(url);
+  superagent.get(url)
+    .set('Authorization', `Bearer ${process.env.YELP_API_KEY}`)
+    .then(result => {
+      const yelpSummaries = result.body.businesses.map(review => {
+        const summary = new Yelp(review);
+        // summary.save(location.id);
+        return summary;
+      });
+      return yelpSummaries;
+    })
+    .catch( ()=> {
+      errorHandler('No movies for you!', request, response);
+    });
+}
+
 app.use('*', notFoundHandler);
 app.use(errorHandler);
 
 // HELPER FUNCTIONS
-
 
 // Make sure the server is listening for requests
 client.connect()
