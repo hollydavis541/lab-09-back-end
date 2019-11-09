@@ -171,12 +171,8 @@ function getMovies(request, response) {
 }
 
 function getYelp(request, response) {
-
   const url = `https://api.yelp.com/v3/businesses/search?latitude=${request.query.data.latitude}&longitude=${request.query.data.longitude}`;
-
-  console.log(request);
-  console.log(url);
-  superagent.get(url)
+  return superagent.get(url)
     .set('Authorization', `Bearer ${process.env.YELP_API_KEY}`)
     .then(result => {
       const yelpSummaries = result.body.businesses.map(review => {
@@ -184,7 +180,7 @@ function getYelp(request, response) {
         // summary.save(location.id);
         return summary;
       });
-      return yelpSummaries;
+      response.status(200).json(yelpSummaries);
     })
     .catch( ()=> {
       errorHandler('No movies for you!', request, response);
@@ -193,12 +189,10 @@ function getYelp(request, response) {
 
 function getTrails(request, response) {
   const url = `https://www.hikingproject.com/data/get-trails?lat=${request.query.data.latitude}&lon=${request.query.data.longitude}&key=${process.env.TRAIL_API_KEY}`
-  console.log(url);
   superagent.get(url)
     .then( data => {
       const trailSummaries = data.body.trails.map(trail => {
         const summary = new Trail(trail);
-        console.log(summary);
         return summary
       });
       response.status(200).json(trailSummaries);
