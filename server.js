@@ -59,6 +59,11 @@ function getLocation(request,response) {
 app.use('*', notFoundHandler);
 app.use(errorHandler);
 
+app.use((req, res, next) => {
+  res.header('Access-Control-Allow-Origin', '*');
+  next();
+});
+
 // HELPER FUNCTIONS
 
 // Make sure the server is listening for requests
