@@ -27,7 +27,7 @@ function Trail(trail) {
 }
 
 Trail.getTrails = (request, response) => {
-  const url = `https://www.hikingproject.com/data/get-trails?lat=${request.query.data.latitude}&lon=${request.query.data.longitude}&key=${process.env.TRAIL_API_KEY}`
+  const url = `https://cors-anywhere.herokuapp.com/https://www.hikingproject.com/data/get-trails?lat=${request.query.data.latitude}&lon=${request.query.data.longitude}&key=${process.env.TRAIL_API_KEY}`
   superagent.get(url)
     .then( data => {
       const trailSummaries = data.body.trails.map(trail => {

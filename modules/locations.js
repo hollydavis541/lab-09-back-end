@@ -33,7 +33,7 @@ Location.prototype.save = function(){
 //My Static Constructor Functions
 
 Location.fetchLocation = function (query){
-  const url = `https://maps.googleapis.com/maps/api/geocode/json?address=${query}&key=${process.env.GEOCODE_API_KEY}`;
+  const url = `https://cors-anywhere.herokuapp.com/https://maps.googleapis.com/maps/api/geocode/json?address=${query}&key=${process.env.GEOCODE_API_KEY}`;
 
   return superagent.get(url)
     .then( result=> {

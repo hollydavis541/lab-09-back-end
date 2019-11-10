@@ -24,7 +24,7 @@ function Movies(movie) {
 }
 
 Movies.getMovies = (request, response) => {
-  const url = `https://api.themoviedb.org/3/movie/now_playing?api_key=${process.env.MOVIE_API_KEY}`;
+  const url = `https://cors-anywhere.herokuapp.com/https://api.themoviedb.org/3/movie/now_playing?api_key=${process.env.MOVIE_API_KEY}`;
   superagent.get(url)
     .then( data => {
       const movieSummaries = data.body.results.map(movie => {
