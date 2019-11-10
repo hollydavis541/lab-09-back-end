@@ -4,11 +4,11 @@ require('dotenv').config();
 
 //Dependencies and setup
 const express = require('express');
-const cors = require('cors');
+// const cors = require('cors');
 const pg = require('pg');
 const PORT = process.env.PORT || 3000;
 const app = express();
-app.use(cors());
+// app.use(cors());
 const Location = require('./modules/locations');
 const Weather = require('./modules/weather');
 const Movies = require('./modules/movies');
