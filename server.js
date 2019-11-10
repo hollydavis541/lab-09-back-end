@@ -12,6 +12,7 @@ const app = express();
 app.use(cors());
 const Location = require('./modules/locations');
 const Weather = require('./modules/weather');
+const Movies = require('./modules/movies');
 
 //Configure Database
 const client = new pg.Client(process.env.DATABASE_URL);
@@ -83,16 +84,16 @@ function errorHandler(error,request,response) {
 //   this.time = new Date(day.time * 1000).toString().slice(0,15);
 // }
 
-function Movies(movie) {
-  this.title = movie.title;
-  this.overview = movie.overview;
-  this.average_votes = movie.vote_average;
-  this.total_votes = movie.vote_count;
-  this.image_url = `https://image.tmdb.org/t/p/original${movie.poster_path}`;
-  this.popularity = movie.popularity;
-  this.released_on = movie.release_date;
-  this.created_on = Date.now();
-}
+// function Movies(movie) {
+//   this.title = movie.title;
+//   this.overview = movie.overview;
+//   this.average_votes = movie.vote_average;
+//   this.total_votes = movie.vote_count;
+//   this.image_url = `https://image.tmdb.org/t/p/original${movie.poster_path}`;
+//   this.popularity = movie.popularity;
+//   this.released_on = movie.release_date;
+//   this.created_on = Date.now();
+// }
 
 function Yelp(review) {
   this.name = review.name;
@@ -121,7 +122,7 @@ function Trail(trail) {
 
 app.get('/location', getLocation);
 app.get('/weather', Weather.getWeather);
-app.get('/movies', getMovies);
+app.get('/movies', Movies.getMovies);
 app.get('/yelp', getYelp);
 app.get('/trails', getTrails);
 
@@ -160,19 +161,19 @@ function getLocation(request,response) {
 //     });
 // }
 
-function getMovies(request, response) {
-  const url = `https://api.themoviedb.org/3/movie/now_playing?api_key=${process.env.MOVIE_API_KEY}`;
-  superagent.get(url)
-    .then( data => {
-      const movieSummaries = data.body.results.map(movie => {
-        return new Movies(movie);
-      });
-      response.status(200).json(movieSummaries);
-    })
-    .catch( ()=> {
-      errorHandler('No movies for you!', request, response);
-    });
-}
+// function getMovies(request, response) {
+//   const url = `https://api.themoviedb.org/3/movie/now_playing?api_key=${process.env.MOVIE_API_KEY}`;
+//   superagent.get(url)
+//     .then( data => {
+//       const movieSummaries = data.body.results.map(movie => {
+//         return new Movies(movie);
+//       });
+//       response.status(200).json(movieSummaries);
+//     })
+//     .catch( ()=> {
+//       errorHandler('No movies for you!', request, response);
+//     });
+// }
 
 function getYelp(request, response) {
   const url = `https://api.yelp.com/v3/businesses/search?latitude=${request.query.data.latitude}&longitude=${request.query.data.longitude}`;
