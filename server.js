@@ -13,6 +13,7 @@ app.use(cors());
 const Location = require('./modules/locations');
 const Weather = require('./modules/weather');
 const Movies = require('./modules/movies');
+const Yelp = require('./modules/yelp');
 
 //Configure Database
 const client = new pg.Client(process.env.DATABASE_URL);
@@ -95,14 +96,14 @@ function errorHandler(error,request,response) {
 //   this.created_on = Date.now();
 // }
 
-function Yelp(review) {
-  this.name = review.name;
-  this.rating = review.rating;
-  this.price = review.price;
-  this.url = review.url;
-  this.image_url = review.image_url;
-  this.created_at = Date.now();
-}
+// function Yelp(review) {
+//   this.name = review.name;
+//   this.rating = review.rating;
+//   this.price = review.price;
+//   this.url = review.url;
+//   this.image_url = review.image_url;
+//   this.created_at = Date.now();
+// }
 
 function Trail(trail) {
   this.name = trail.name;
@@ -123,7 +124,7 @@ function Trail(trail) {
 app.get('/location', getLocation);
 app.get('/weather', Weather.getWeather);
 app.get('/movies', Movies.getMovies);
-app.get('/yelp', getYelp);
+app.get('/yelp', Yelp.getYelp);
 app.get('/trails', getTrails);
 
 //Route Handlers
@@ -175,22 +176,22 @@ function getLocation(request,response) {
 //     });
 // }
 
-function getYelp(request, response) {
-  const url = `https://api.yelp.com/v3/businesses/search?latitude=${request.query.data.latitude}&longitude=${request.query.data.longitude}`;
-  return superagent.get(url)
-    .set('Authorization', `Bearer ${process.env.YELP_API_KEY}`)
-    .then(result => {
-      const yelpSummaries = result.body.businesses.map(review => {
-        const summary = new Yelp(review);
-        // summary.save(location.id);
-        return summary;
-      });
-      response.status(200).json(yelpSummaries);
-    })
-    .catch( ()=> {
-      errorHandler('No movies for you!', request, response);
-    });
-}
+// function getYelp(request, response) {
+//   const url = `https://api.yelp.com/v3/businesses/search?latitude=${request.query.data.latitude}&longitude=${request.query.data.longitude}`;
+//   return superagent.get(url)
+//     .set('Authorization', `Bearer ${process.env.YELP_API_KEY}`)
+//     .then(result => {
+//       const yelpSummaries = result.body.businesses.map(review => {
+//         const summary = new Yelp(review);
+//         // summary.save(location.id);
+//         return summary;
+//       });
+//       response.status(200).json(yelpSummaries);
+//     })
+//     .catch( ()=> {
+//       errorHandler('No movies for you!', request, response);
+//     });
+// }
 
 function getTrails(request, response) {
   const url = `https://www.hikingproject.com/data/get-trails?lat=${request.query.data.latitude}&lon=${request.query.data.longitude}&key=${process.env.TRAIL_API_KEY}`
