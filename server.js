@@ -10,7 +10,8 @@ const pg = require('pg');
 const PORT = process.env.PORT || 3000;
 const app = express();
 app.use(cors());
-const Location = require('./locations');
+const Location = require('./modules/locations');
+const Weather = require('./modules/weather');
 
 //Configure Database
 const client = new pg.Client(process.env.DATABASE_URL);
@@ -77,10 +78,10 @@ function errorHandler(error,request,response) {
 //     .catch(console.error);
 // };
 
-function Weather(day) {
-  this.forecast = day.summary;
-  this.time = new Date(day.time * 1000).toString().slice(0,15);
-}
+// function Weather(day) {
+//   this.forecast = day.summary;
+//   this.time = new Date(day.time * 1000).toString().slice(0,15);
+// }
 
 function Movies(movie) {
   this.title = movie.title;
@@ -119,7 +120,7 @@ function Trail(trail) {
 // API Routes
 
 app.get('/location', getLocation);
-app.get('/weather', getWeather);
+app.get('/weather', Weather.getWeather);
 app.get('/movies', getMovies);
 app.get('/yelp', getYelp);
 app.get('/trails', getTrails);
@@ -145,19 +146,19 @@ function getLocation(request,response) {
   Location.lookup(locationHandler);
 }
 
-function getWeather(request, response) {
-  const url = `https://api.darksky.net/forecast/${process.env.WEATHER_API_KEY}/${request.query.data.latitude},${request.query.data.longitude}`;
-  superagent.get(url)
-    .then( data => {
-      const weatherSummaries = data.body.daily.data.map(day => {
-        return new Weather(day);
-      });
-      response.status(200).json(weatherSummaries);
-    })
-    .catch( ()=> {
-      errorHandler('No weather for you!', request, response);
-    });
-}
+// function getWeather(request, response) {
+//   const url = `https://api.darksky.net/forecast/${process.env.WEATHER_API_KEY}/${request.query.data.latitude},${request.query.data.longitude}`;
+//   superagent.get(url)
+//     .then( data => {
+//       const weatherSummaries = data.body.daily.data.map(day => {
+//         return new Weather(day);
+//       });
+//       response.status(200).json(weatherSummaries);
+//     })
+//     .catch( ()=> {
+//       errorHandler('No weather for you!', request, response);
+//     });
+// }
 
 function getMovies(request, response) {
   const url = `https://api.themoviedb.org/3/movie/now_playing?api_key=${process.env.MOVIE_API_KEY}`;
