@@ -1,14 +1,7 @@
 require('dotenv').config();
-
-//Dependencies and setup
-const express = require('express');
-const cors = require('cors');
 const superagent = require('superagent');
 const pg = require('pg');
-const app = express();
-app.use(cors());
 
-//Configure Database
 const client = new pg.Client(process.env.DATABASE_URL);
 client.on('err', err => console.error(err));
 
@@ -33,7 +26,7 @@ Location.prototype.save = function(){
 //My Static Constructor Functions
 
 Location.fetchLocation = function (query){
-  const url = `https://cors-anywhere.herokuapp.com/https://maps.googleapis.com/maps/api/geocode/json?address=${query}&key=${process.env.GEOCODE_API_KEY}`;
+  const url = `https://maps.googleapis.com/maps/api/geocode/json?address=${query}&key=${process.env.GEOCODE_API_KEY}`;
 
   return superagent.get(url)
     .then( result=> {

@@ -1,14 +1,7 @@
 require('dotenv').config();
-
-//Dependencies and setup
-const express = require('express');
-const cors = require('cors');
 const superagent = require('superagent');
 const pg = require('pg');
-const app = express();
-app.use(cors());
 
-//Configure Database
 const client = new pg.Client(process.env.DATABASE_URL);
 client.on('err', err => console.error(err));
 
@@ -24,7 +17,7 @@ function Movies(movie) {
 }
 
 Movies.getMovies = (request, response) => {
-  const url = `https://cors-anywhere.herokuapp.com/https://api.themoviedb.org/3/movie/now_playing?api_key=${process.env.MOVIE_API_KEY}`;
+  const url = `https://api.themoviedb.org/3/movie/now_playing?api_key=${process.env.MOVIE_API_KEY}`;
   superagent.get(url)
     .then( data => {
       const movieSummaries = data.body.results.map(movie => {

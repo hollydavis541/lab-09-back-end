@@ -1,14 +1,7 @@
 require('dotenv').config();
-
-//Dependencies and setup
-const express = require('express');
-const cors = require('cors');
 const superagent = require('superagent');
 const pg = require('pg');
-const app = express();
-app.use(cors());
 
-//Configure Database
 const client = new pg.Client(process.env.DATABASE_URL);
 client.on('err', err => console.error(err));
 
@@ -22,7 +15,7 @@ function Yelp(review) {
 }
 
 Yelp.getYelp = (request, response) => {
-  const url = `https://cors-anywhere.herokuapp.com/https://api.yelp.com/v3/businesses/search?latitude=${request.query.data.latitude}&longitude=${request.query.data.longitude}`;
+  const url = `https://api.yelp.com/v3/businesses/search?latitude=${request.query.data.latitude}&longitude=${request.query.data.longitude}`;
   return superagent.get(url)
     .set('Authorization', `Bearer ${process.env.YELP_API_KEY}`)
     .then(result => {
