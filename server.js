@@ -43,12 +43,10 @@ function getLocation(request,response) {
     query: request.query.data,
 
     cacheHit: (results) => {
-      console.log('Got data from DB');
       response.send(results.rows[0]);
     },
 
     cacheMiss: () => {
-      console.log('No data in DB, fetching...');
       Location.fetchLocation(request.query.data)
         .then( data => response.send(data));
     }
