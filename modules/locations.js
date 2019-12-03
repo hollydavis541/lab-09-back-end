@@ -10,13 +10,14 @@ function Location(query, data){
   this.formatted_query = data.formatted_address;
   this.latitude = data.geometry.location.lat;
   this.longitude = data.geometry.location.lng;
+  this.created_at = Date.now();
 }
 
 //Define a prototype function to save data to DB
 Location.prototype.save = function(){
   const SQL = `INSERT INTO locations
-  (search_query, formatted_query, latitude, longitude)
-  VALUES ($1, $2, $3, $4)
+  (search_query, formatted_query, latitude, longitude, created_at)
+  VALUES ($1, $2, $3, $4, $5)
   RETURNING *`;
 
   let values = Object.values(this);
@@ -40,15 +41,34 @@ Location.fetchLocation = function (query){
     });
 };
 
+// function deleteLocation(request, response) {
+//   // const SQL = `DELETE FROM locations WHERE search_query='bend, or';`
+//   const SQL = `DELETE FROM locations WHERE search_query='${results.rows[0].search_query}';`
+//   client.query(SQL);
+// }
+
 Location.lookup = (handler) => {
   const SQL = `SELECT * FROM locations WHERE search_query=$1`;
   const values = [handler.query];
 
   return client.query(SQL, values)
     .then( results => {
-      if (results.rowCount > 0){
+      // console.log(results.rows[0].search_query);
+      // let dataAge = Date.now() - (results.rows[0].created_at);
+      // console.log(dataAge);
+      // console.log(results.rows[0].created_at);
+      if (results.rowCount > 0 && (Date.now() - (results.rows[0].created_at)) < 360){
+        console.log('Got data from DB');
         handler.cacheHit(results);
-      }else {
+      } else if (results.rowCount > 0 && (Date.now() - (results.rows[0].created_at)) >= 360) {
+        console.log('In DB, but too old, fetching new info from API');
+        // `DELETE FROM locations WHERE search_query=$1;`;
+        // deleteLocation();
+        const sqlDelete = `DELETE FROM locations WHERE search_query='${results.rows[0].search_query}';`
+        client.query(sqlDelete);
+        handler.cacheMiss();
+      } else {
+        console.log('No data in DB, fetching...');
         handler.cacheMiss();
       }
     })
